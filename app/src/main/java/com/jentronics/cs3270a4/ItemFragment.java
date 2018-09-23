@@ -2,6 +2,7 @@ package com.jentronics.cs3270a4;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -64,6 +65,8 @@ public class ItemFragment extends Fragment {
         item3 = (EditText) root.findViewById(R.id.item3);
         item4 = (EditText) root.findViewById(R.id.item4);
 
+
+
         TextWatcher amountWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -99,6 +102,30 @@ public class ItemFragment extends Fragment {
         item2.addTextChangedListener(amountWatcher);
         item3.addTextChangedListener(amountWatcher);
         item4.addTextChangedListener(amountWatcher);
+
+        String tmpAmount;
+        SharedPreferences sp = getActivity().getPreferences(Context.MODE_PRIVATE);
+        tmpAmount = sp.getString("amount1", "");
+        item1.setText(tmpAmount);
+        tmpAmount = sp.getString("amount2", "");
+        item2.setText(tmpAmount);
+        tmpAmount = sp.getString("amount3", "");
+        item3.setText(tmpAmount);
+        tmpAmount = sp.getString("amount4", "");
+        item4.setText(tmpAmount);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        SharedPreferences sp = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor spEdit = sp.edit();
+        spEdit.putString("amount1", item1.getText().toString());
+        spEdit.putString("amount2", item2.getText().toString());
+        spEdit.putString("amount3", item3.getText().toString());
+        spEdit.putString("amount4", item4.getText().toString());
+        spEdit.commit();
     }
 
     public BigDecimal getItemAmount() {
