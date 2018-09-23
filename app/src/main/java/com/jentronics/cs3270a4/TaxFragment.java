@@ -20,7 +20,12 @@ import java.math.BigDecimal;
 public class TaxFragment extends Fragment {
     private SeekBar taxBar;
     private TextView tv_taxRate;
+    private TextView tv_taxAmount;
+
     private BigDecimal taxRate = new BigDecimal(0);
+    private BigDecimal totalAmount = new BigDecimal(0); // this is a cached value
+    private BigDecimal taxAmount = new BigDecimal(0);
+
     private View root;
     private OnTaxRateChanged mCallback;
 
@@ -31,8 +36,18 @@ public class TaxFragment extends Fragment {
     private String buildTaxRateString(BigDecimal taxRate) {
         return getString(R.string.msg_tax_rate) + taxRate.multiply(new BigDecimal(100)).stripTrailingZeros().toPlainString() +"%";
     }
+
+    private String buildTaxAmountString(BigDecimal taxAmount) {
+        return getString(R.string.msg_tax_amount) + taxAmount.toPlainString();
+    }
     public TaxFragment() {
         // Required empty public constructor
+    }
+
+    public void updateTotal(BigDecimal total){
+        totalAmount = total;
+        taxAmount = totalAmount.multiply(taxRate).setScale(2, BigDecimal.ROUND_UP);
+        tv_taxAmount.setText(buildTaxAmountString(taxAmount));
     }
 
     @Override
@@ -60,14 +75,17 @@ public class TaxFragment extends Fragment {
 
         tv_taxRate = (TextView) root.findViewById(R.id.taxRate);
         tv_taxRate.setText(buildTaxRateString(taxRate));
+        tv_taxAmount = (TextView) root.findViewById(R.id.taxAmount);
+        tv_taxAmount.setText(buildTaxAmountString(taxAmount));
 
         taxBar = (SeekBar) root.findViewById(R.id.taxBar);
         taxBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar taxBar, int i, boolean b) {
                 taxRate = new BigDecimal(i);
-                taxRate = taxRate.multiply(new BigDecimal("0.0025"));
-
+                taxRate = taxRate.multiply(new BigDecimal("0.0025")); // this is a string to avoid conversion errors in BigNumber
+                taxAmount = totalAmount.multiply(taxRate).setScale(2, BigDecimal.ROUND_UP);
+                tv_taxAmount.setText(buildTaxAmountString(taxAmount));
                 tv_taxRate.setText(buildTaxRateString(taxRate));
                 mCallback.onSeekUpdate(taxRate);
             }
@@ -83,4 +101,6 @@ public class TaxFragment extends Fragment {
             }
         });
     }
+
+
 }

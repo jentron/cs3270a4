@@ -3,5 +3,7 @@
     <string name="tax_frag_error_msg">Must Implement OnTaxRateChanged</string>
     <string name="msg_tax_rate">"Tax Rate: "</string>
     <string name="total_amount">Total Amount</string>
+    <string name="item_amount">Item Amount</string>
+    <string name="msg_tax_amount">Tax Amount: $</string>
 
 </resources>

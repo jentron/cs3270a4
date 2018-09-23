@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements TaxFragment.OnTax
         fm.beginTransaction()
                 .add(R.id.taxFragment, new TaxFragment(), "FragTax")
                 .add(R.id.totalsFragment, new TotalsFragment(), "FragTotal")
+                .add(R.id.itemFragment, new ItemFragment(), "FragItem")
                 .commit();
     }
 
