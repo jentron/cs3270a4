@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CS3270A4 RJensen</string>
+    <string name="tax_frag_error_msg">Must Implement OnTaxRateChanged</string>
+    <string name="msg_tax_rate">"Tax Rate: "</string>
+    <string name="total_amount">Total Amount</string>
 
 </resources>

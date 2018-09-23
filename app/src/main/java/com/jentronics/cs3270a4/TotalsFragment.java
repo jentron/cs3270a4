@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 /**
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
  */
 public class TotalsFragment extends Fragment {
 
+    private View root;
+    private TextView tv_totalAmount;
 
     public TotalsFragment() {
         // Required empty public constructor
@@ -23,7 +26,13 @@ public class TotalsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_totals, container, false);
+        return root = inflater.inflate(R.layout.fragment_totals, container, false);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        tv_totalAmount = (TextView) root.findViewById(R.id.totalAmount);
+    }
 }

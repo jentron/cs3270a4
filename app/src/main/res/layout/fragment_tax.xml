@@ -20,7 +20,7 @@
         android:id="@+id/taxRate"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Tax Rate: 10%" />
+        android:text="" />
     <TextView
         android:id="@+id/taxAmount"
         android:layout_width="match_parent"
