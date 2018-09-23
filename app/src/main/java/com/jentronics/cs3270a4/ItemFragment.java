@@ -8,11 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.math.BigDecimal;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ItemFragment extends Fragment {
+    private BigDecimal itemAmount = new BigDecimal(100);
 
     public ItemFragment() {
         // Required empty public constructor
@@ -25,4 +28,7 @@ public class ItemFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_item, container, false);
     }
 
+    public BigDecimal getItemAmount() {
+        return itemAmount;
+    }
 }

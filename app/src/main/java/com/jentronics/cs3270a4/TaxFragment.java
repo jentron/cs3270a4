@@ -2,6 +2,8 @@ package com.jentronics.cs3270a4;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,6 +14,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 
 /**
@@ -19,9 +23,11 @@ import java.math.BigDecimal;
  */
 public class TaxFragment extends Fragment {
     private SeekBar taxBar;
+
     private TextView tv_taxRate;
     private TextView tv_taxAmount;
-
+    private NumberFormat moneyFormat   = NumberFormat.getCurrencyInstance(Locale.US);
+    private NumberFormat percentFormat = NumberFormat.getPercentInstance(Locale.US);
     private BigDecimal taxRate = new BigDecimal(0);
     private BigDecimal totalAmount = new BigDecimal(0); // this is a cached value
     private BigDecimal taxAmount = new BigDecimal(0);
@@ -34,11 +40,11 @@ public class TaxFragment extends Fragment {
     }
 
     private String buildTaxRateString(BigDecimal taxRate) {
-        return getString(R.string.msg_tax_rate) + taxRate.multiply(new BigDecimal(100)).stripTrailingZeros().toPlainString() +"%";
+        return getString(R.string.msg_tax_rate) + percentFormat.format(taxRate.doubleValue());
     }
 
     private String buildTaxAmountString(BigDecimal taxAmount) {
-        return getString(R.string.msg_tax_amount) + taxAmount.toPlainString();
+        return getString(R.string.msg_tax_amount) + moneyFormat.format(taxAmount.doubleValue());
     }
     public TaxFragment() {
         // Required empty public constructor
@@ -48,6 +54,10 @@ public class TaxFragment extends Fragment {
         totalAmount = total;
         taxAmount = totalAmount.multiply(taxRate).setScale(2, BigDecimal.ROUND_UP);
         tv_taxAmount.setText(buildTaxAmountString(taxAmount));
+    }
+
+    public BigDecimal getTaxAmount(){
+        return(taxAmount);
     }
 
     @Override
@@ -72,13 +82,14 @@ public class TaxFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        percentFormat.setMinimumFractionDigits(2);
         tv_taxRate = (TextView) root.findViewById(R.id.taxRate);
         tv_taxRate.setText(buildTaxRateString(taxRate));
         tv_taxAmount = (TextView) root.findViewById(R.id.taxAmount);
         tv_taxAmount.setText(buildTaxAmountString(taxAmount));
 
         taxBar = (SeekBar) root.findViewById(R.id.taxBar);
+
         taxBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar taxBar, int i, boolean b) {
@@ -100,7 +111,20 @@ public class TaxFragment extends Fragment {
 
             }
         });
+
+        SharedPreferences sp = getActivity().getPreferences(Context.MODE_PRIVATE);
+        int taxBarInt = sp.getInt("taxSeekBar", 0);
+        taxBar.setProgress(taxBarInt);
+
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
 
+        SharedPreferences sp = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor spEdit = sp.edit();
+        spEdit.putInt("taxSeekBar", taxBar.getProgress());
+        spEdit.commit();
+    }
 }

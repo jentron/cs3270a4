@@ -8,22 +8,43 @@ import android.util.Log;
 import java.math.BigDecimal;
 
 public class MainActivity extends AppCompatActivity implements TaxFragment.OnTaxRateChanged {
+    private FragmentManager fm;
+    private TaxFragment taxFragment;
+    private TotalsFragment totalsFragment;
+    private ItemFragment itemFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentManager fm = getSupportFragmentManager();
+        fm = getSupportFragmentManager();
         fm.beginTransaction()
-                .add(R.id.taxFragment, new TaxFragment(), "FragTax")
-                .add(R.id.totalsFragment, new TotalsFragment(), "FragTotal")
-                .add(R.id.itemFragment, new ItemFragment(), "FragItem")
+                .replace(R.id.taxFragment, new TaxFragment(), "FragTax")
+                .replace(R.id.totalsFragment, new TotalsFragment(), "FragTotal")
+                .replace(R.id.itemFragment, new ItemFragment(), "FragItem")
                 .commit();
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        taxFragment    = (TaxFragment)    fm.findFragmentByTag("FragTax");
+        totalsFragment = (TotalsFragment) fm.findFragmentByTag("FragTotal");
+        itemFragment   = (ItemFragment)   fm.findFragmentByTag("FragItem");
+    }
+
+    @Override
     public void onSeekUpdate(BigDecimal taxRate) {
+        updateAll();
         Log.d("test", getString(R.string.msg_tax_rate) + taxRate.toPlainString() );
+    }
+
+    private void updateAll(){
+        BigDecimal itemAmount = itemFragment.getItemAmount();
+        taxFragment.updateTotal(itemAmount);
+        BigDecimal taxAmount  = taxFragment.getTaxAmount();
+        totalsFragment.updateTotal(itemAmount, taxAmount);
+
     }
 }

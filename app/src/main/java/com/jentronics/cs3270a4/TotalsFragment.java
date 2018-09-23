@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +20,9 @@ public class TotalsFragment extends Fragment {
 
     private View root;
     private TextView tv_totalAmount;
+    private NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.US);;
+
+    private BigDecimal total = new BigDecimal(0);
 
     public TotalsFragment() {
         // Required empty public constructor
@@ -32,7 +39,13 @@ public class TotalsFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-
         tv_totalAmount = (TextView) root.findViewById(R.id.totalAmount);
+        tv_totalAmount.setText(numFormat.format(total.doubleValue()));
+    }
+
+    public void updateTotal(BigDecimal itemAmount, BigDecimal taxAmount) {
+
+        total = itemAmount.add(taxAmount);
+        if(tv_totalAmount != null) tv_totalAmount.setText(numFormat.format(total.doubleValue()));
     }
 }
