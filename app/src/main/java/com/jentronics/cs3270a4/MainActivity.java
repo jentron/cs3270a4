@@ -7,7 +7,8 @@ import android.util.Log;
 
 import java.math.BigDecimal;
 
-public class MainActivity extends AppCompatActivity implements TaxFragment.OnTaxRateChanged {
+public class MainActivity extends AppCompatActivity implements
+        TaxFragment.OnTaxRateChanged, ItemFragment.OnAmountChanged {
     private FragmentManager fm;
     private TaxFragment taxFragment;
     private TotalsFragment totalsFragment;
@@ -40,6 +41,11 @@ public class MainActivity extends AppCompatActivity implements TaxFragment.OnTax
         Log.d("test", getString(R.string.msg_tax_rate) + taxRate.toPlainString() );
     }
 
+    @Override
+    public void onAmountUpdate(BigDecimal amount){
+        updateAll();
+    }
+    
     private void updateAll(){
         BigDecimal itemAmount = itemFragment.getItemAmount();
         taxFragment.updateTotal(itemAmount);
